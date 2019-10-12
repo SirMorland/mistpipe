@@ -1,0 +1,28 @@
+{
+	"name": "mistpipe",
+	"version": "0.1.0",
+	"private": true,
+	"homepage": "https://dev.morland.red/mistpipe",
+	"dependencies": {
+		"express": "^4.17.1",
+		"node-fetch": "^2.6.0",
+		"socket.io": "^2.2.0"
+	},
+	"devDependencies": {
+		"nodemon": "^1.19.1",
+		"concurrently": "^4.1.1"
+	},
+	"scripts": {
+		"start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+		"server": "nodemon server.js",
+		"client": "cd client && npm run start",
+		"build": "rm -rf build && cd client && npm run build && mv build ../"
+	},
+	"nodemonConfig": {
+		"ext": "html,js",
+		"ignore": [
+			"build/*",
+			"client/*"
+		]
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"name": "Mistpipe",
+	"short_name": "Mistpipe",
+	"start_url": "https://dev.morland.red/mistpipe",
+	"display": "fullscreen",
+	"icons": [
+		{
+		  "src": "./logo-192.png",
+		  "type": "image/png",
+		  "sizes": "192x192"
+		}
+	]
+}

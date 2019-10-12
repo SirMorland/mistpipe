@@ -1,0 +1,68 @@
+#client h1 {
+	margin: 32px;
+	text-align: center;
+}
+
+.card-collection {
+	display: grid;
+	margin: 16px;
+	gap: 16px;
+	grid-auto-columns: minmax(0, 1024px);
+	justify-content: center;
+}
+
+.card {
+	background-color: #666;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.card .title {
+	padding: 16px;
+	background-color: #399;
+}
+
+.grid {
+	display: grid;
+	gap: 16px;
+	margin: 16px;
+}
+
+.grid-item {
+	display: grid;
+	grid-template-columns: min-content 1fr;
+	gap: 16px;
+	align-items: center;
+}
+
+.grid-item img {
+	width: 128px;
+	box-shadow: 2px 2px 8px -4px #000;
+}
+
+input {
+	border: none;
+	outline: none;
+
+	padding: 8px;
+	background-color: #333;
+	border-radius: 4px;
+}
+
+button {
+	border: none;
+	outline: none;
+
+	padding: 8px 16px;
+	color: #fff;
+	background-color: #399;
+	border-radius: 4px;
+
+	cursor: pointer;
+	transition: .2s ease-in-out;
+}
+
+form:not(:valid) button {
+	pointer-events: none;
+	color: #ccc;
+	background-color: #999;
+}

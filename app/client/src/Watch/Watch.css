@@ -1,0 +1,80 @@
+.watch {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+.background {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.background h1 {
+	animation: idle 2s linear infinite;
+}
+
+@keyframes idle {
+	0% { transform: translate(0, 0) rotate(0deg); }
+	16% { transform: translate(0, 0) rotate(0deg); }
+	18% { transform: translate(0, 0) rotate(-10deg); }
+	22% { transform: translate(0, 0) rotate(10deg); }
+	24% { transform: translate(0, 0) rotate(0deg); }
+	46% { transform: translate(0, 0) rotate(0deg); }
+	48% { transform: translate(0, 0) rotate(-10deg); }
+	52% { transform: translate(0, 0) rotate(10deg); }
+	54% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.video-container {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+
+	perspective: 1920px;
+}
+.video-container .video {
+	width: 100%;
+	height: 100%;
+
+	transform-origin: left;
+	transition: 2s ease-in-out;
+}
+.video-container .video.idle {
+	opacity: 0;
+}
+.video-container .video.previewing {
+	transform: translate(10%, 0) rotateY(45deg) scale(0.9);
+}
+.video-container .video iframe {
+	width: 100%;
+	height: 100%;
+	box-shadow: 0 0 128px -64px #000;
+	transition: 2s ease-in-out;
+}
+.video-container .video.previewing iframe {
+	box-shadow: -128px 128px 128px -64px #000;
+}
+
+.queue {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	width: 512px;
+	height: 100%;
+	transition: 2s ease-in-out;
+}
+.queue.hidden {
+	transform: translate(calc(100% + 32px), 0);
+}
+.queue .card {
+	height: calc(100% - 32px);
+}
