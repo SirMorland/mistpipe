@@ -60,8 +60,12 @@ button {
 	cursor: pointer;
 	transition: .2s ease-in-out;
 }
+button.danger {
+	background-color: #933;
+}
 
-form:not(:valid) button {
+form:not(:valid) button,
+button:disabled {
 	pointer-events: none;
 	color: #ccc;
 	background-color: #999;

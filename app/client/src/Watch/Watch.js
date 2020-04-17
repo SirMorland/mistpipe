@@ -9,11 +9,13 @@ export default class Watch extends React.Component {
 
 		this.state = {
 			youtubeStarted: false,
+			nowPlaying: null,
 			playlist: [],
 			state: States.IDLE
 		}
 
 		this.startYoutube = this.startYoutube.bind(this);
+		this.startVideo = this.startVideo.bind(this);
 		this.play = this.play.bind(this);
 		this.setTimeout = this.setTimeout.bind(this);
 	}
@@ -38,16 +40,27 @@ export default class Watch extends React.Component {
 				if(this.state.playlist.length > 0) {
 					if(!this.state.youtubeStarted) {
 						this.startYoutube();
-
-						this.setState({
-							youtubeStarted: true
-						});
 					} else {
 						if(this.state.state === States.IDLE) {
-							this.player.loadVideoById({
-								videoId: this.state.playlist[0].id
-							});
+							this.startVideo();
 						}
+					}
+				}
+
+				if(this.state.state === States.PLAYING && !this.state.playlist.find(a => a.id === this.state.nowPlaying)) {
+					if(this.state.playlist.length > 0) {
+						this.setState({
+							state: States.PREVIEWING
+						});
+
+						if(this.timeout) {
+							clearTimeout(this.timeout);
+						}
+						this.timeout = setTimeout(this.startVideo, 4000);
+					} else {
+						this.setState({
+							state: States.IDLE
+						});
 					}
 				}
 			});
@@ -61,11 +74,17 @@ export default class Watch extends React.Component {
 		let firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+		let video = this.state.playlist[0];
+		this.setState({
+			nowPlaying: video.id,
+			youtubeStarted: true
+		});
+
 		window.onYouTubeIframeAPIReady = () => {
 			this.player = new window.YT.Player('player', {
 				height: '390',
 				width: '640',
-				videoId: this.state.playlist[0].id,
+				videoId: video.videoId,
 				events: {
 				  'onReady': onPlayerReady,
 				  'onStateChange': onPlayerStateChange
@@ -82,17 +101,18 @@ export default class Watch extends React.Component {
 		}
 		let onPlayerStateChange = (event) => {
 			if(event.data === 0) {
-				let id = this.player.getVideoData().video_id;
-				this.socket.emit('video-ended', id);
 				this.setState(state => {
+					let id = state.nowPlaying;
+					this.socket.emit('video-ended', id);
 					let playlist = state.playlist.filter(a => a.id !== id);
 					if(playlist.length > 0) {
 						this.player.loadVideoById({
-							videoId: playlist[0].id
+							videoId: playlist[0].videoId
 						});
 
 						return {
-							playlist
+							playlist,
+							nowPlaying: playlist[0].id
 						};
 					} else {
 						return {
@@ -105,6 +125,18 @@ export default class Watch extends React.Component {
 				this.play();
 			}
 		}
+	}
+
+	startVideo() {
+		let video = this.state.playlist[0];
+		console.log(`start video ${video.title}`);
+		this.player.loadVideoById({
+			videoId: video.videoId
+		});
+
+		this.setState({
+			nowPlaying: video.id
+		});
 	}
 
 	play() {
@@ -123,7 +155,10 @@ export default class Watch extends React.Component {
 		let duration = this.player.getDuration();
 		let position = this.player.getCurrentTime();
 
-		setTimeout(() => {
+		if(this.timeout) {
+			clearTimeout(this.timeout);
+		}
+		this.timeout = setTimeout(() => {
 			this.setState(state  => {
 				if(state.playlist.length > 1) {
 					return {
@@ -136,12 +171,7 @@ export default class Watch extends React.Component {
 	}
 
 	render() {
-		let playlist
-		if(this.player && this.player.getVideoData()) {
-			playlist = this.state.playlist.filter(a => a.id !== this.player.getVideoData().video_id);
-		} else {
-			playlist = this.state.playlist;
-		}
+		let playlist = this.state.playlist.filter(a => a.id !== this.state.nowPlaying);
 
 		return (
 			<div id="watch">

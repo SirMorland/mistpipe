@@ -4,17 +4,23 @@ const port = process.env.PORT || 3001;
 const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
+const uuid = require('uuid/v4');
 
 /*== Web sockets ==*/
 
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+let options = {};
+if(process.env.NODE_ENV !== "production") {
+	options.path = '/mistpipe/socket.io';
+}
+const io = require('socket.io')(http, options);
 
 const YOUTUBE_API_KEY = "INSERT API KEY HERE";
 
 let playlist = [];
 let authority = null;
 let watchers = [];
+let users = [];
 
 io.on('connection', socket => {
 	console.log(`${socket.id} connected`);
@@ -23,6 +29,22 @@ io.on('connection', socket => {
 
 	socket.on('disconnect', () => {
 		console.log(`${socket.id} disconnected`);
+
+		users = users.filter(a => a !== socket.id);
+		let skipped = false;
+		playlist.forEach(video => {
+			if(video.skips.includes(socket.id)) {
+				video.skips = video.skips.filter(a => a !== socket.id);
+				skipped = true;
+			}
+		});
+
+		if(skipped) {
+			socket.broadcast.emit('playlist', playlist);
+		}
+
+		socket.broadcast.emit('users', users.length);
+
 		if(authority === socket.id) {
 			if(watchers.length > 0) {
 				authority = watchers[0];
@@ -35,6 +57,11 @@ io.on('connection', socket => {
 		} else {
 			watchers = watchers.filter(a => a !== socket.id);
 		}
+	});
+
+	socket.on('login', () => {
+		users.push(socket.id);
+		io.emit('users', users.length);
 	});
 
 	socket.on('claim-authority', () => {
@@ -68,15 +95,39 @@ io.on('connection', socket => {
 		.then(json => {
 			if(json.items[0]) {
 				playlist.push({
-					id: id,
+					id: uuid(),
+					videoId: id,
 					title: json.items[0].snippet.title,
 					thumbnails: json.items[0].snippet.thumbnails,
-					adder: socket.id
+					adder: socket.id,
+					skips: []
 				});
 		
 				io.emit('playlist', playlist);
 			}
 		});
+	});
+
+	socket.on('remove-video', message => {
+		playlist = playlist.filter(a => a.id !== message || a.adder !== socket.id);
+
+		io.emit('playlist', playlist);
+	});
+
+	socket.on('skip-video', message => {
+		console.log(message);
+		let video = playlist.find(a => a.id === message);
+		if(video) {
+			if(!video.skips.includes(socket.id)) {
+				video.skips.push(socket.id);
+			}
+
+			if(video.skips.length >= users.length / 2) {
+				playlist = playlist.filter(a => a.id !== message);
+			}
+
+			io.emit('playlist', playlist);
+		}
 	});
 
 	socket.on('video-ended', message => {

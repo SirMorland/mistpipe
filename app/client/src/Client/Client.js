@@ -9,19 +9,29 @@ export default class Client extends React.Component {
 
 		this.state = {
 			video: '',
-			playlist: []
+			playlist: [],
+			users: 0
 		}
 
 		this.update = this.update.bind(this);
 		this.submitVideo = this.submitVideo.bind(this);
+		this.skipVideo = this.skipVideo.bind(this);
+		this.removeVideo = this.removeVideo.bind(this);
 	}
 
 	componentDidMount() {
 		this.socket = io('', {path: '/mistpipe/socket.io'});
+		this.socket.emit('login');
 
 		this.socket.on('playlist', message => {
 			this.setState({
 				playlist: message
+			});
+		});
+
+		this.socket.on('users', message => {
+			this.setState({
+				users: message
 			});
 		});
 	}
@@ -40,6 +50,14 @@ export default class Client extends React.Component {
 		this.setState({
 			video: ''
 		});
+	}
+
+	skipVideo(event) {
+		this.socket.emit('skip-video', event.target.id);
+	}
+
+	removeVideo(event) {
+		this.socket.emit('remove-video', event.target.id);
 	}
 
 	render() {
@@ -63,7 +81,18 @@ export default class Client extends React.Component {
 							{this.state.playlist.map((a, index) =>
 								<div key={index} className="grid-item">
 									<img src={a.thumbnails.medium.url} alt="" />
-									<h3>{a.title}</h3>
+									<div>
+										<h4>{a.title}</h4>
+										<br />
+										{a.adder === this.socket.id ?
+											<button id={a.id} className="danger" onClick={this.removeVideo}>REMOVE</button>
+										:
+											<button id={a.id} onClick={this.skipVideo} disabled={a.skips.includes(this.socket.id)}>
+												SKIP
+											</button>
+										}
+										&nbsp;<span>{a.skips.length}/{Math.ceil(this.state.users / 2)}</span>
+									</div>
 								</div>
 							)}
 							{this.state.playlist.length === 0 && 

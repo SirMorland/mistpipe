@@ -40,6 +40,7 @@
 	bottom: 0;
 
 	perspective: 1920px;
+	pointer-events: none;
 }
 .video-container .video {
 	width: 100%;
@@ -68,7 +69,7 @@
 	position: fixed;
 	top: 16px;
 	right: 16px;
-	width: 512px;
+	width: 25%;
 	height: 100%;
 	transition: 2s ease-in-out;
 }
