@@ -5,12 +5,12 @@
   "homepage": "https://dev.morland.red/mistpipe",
   "proxy": "http://localhost:3001",
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.0.1",
-    "socket.io-client": "^2.2.0",
-    "typescript": "^3.5.2"
+    "react-scripts": "^3.4.1",
+    "socket.io-client": "^2.3.0",
+    "typescript": "^3.8.3"
   },
   "devDependencies": {
     "@csstools/normalize.css": "github:csstools/normalize.css"
