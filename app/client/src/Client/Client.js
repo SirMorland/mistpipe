@@ -1,6 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 
+import GitHub from './GitHub-Mark-Light-32px.png';
 import './Client.css';
 
 export default class Client extends React.Component {
@@ -100,6 +101,10 @@ export default class Client extends React.Component {
 							}
 						</div>
 					</div>
+					<a href="https://github.com/SirMorland/mistpipe" rel="noopener noreferrer" target="_blank">
+						<img src={GitHub} alt="GitHub" />
+						https://github.com/SirMorland/mistpipe
+					</a>
 				</div>
 			</div>
 		);

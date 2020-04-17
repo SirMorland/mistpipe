@@ -70,3 +70,11 @@ button:disabled {
 	color: #ccc;
 	background-color: #999;
 }
+
+.card-collection a {
+	line-height: 32px;
+	text-align: center;
+}
+.card-collection a img {
+	margin-right: 8px;
+}

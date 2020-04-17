@@ -11,13 +11,24 @@ export default class Watch extends React.Component {
 			youtubeStarted: false,
 			nowPlaying: null,
 			playlist: [],
-			state: States.IDLE
+			state: States.IDLE,
+			volume: 100
 		}
 
 		this.startYoutube = this.startYoutube.bind(this);
 		this.startVideo = this.startVideo.bind(this);
 		this.play = this.play.bind(this);
 		this.setTimeout = this.setTimeout.bind(this);
+	}
+
+	updateVolume = event => {
+		let volume = parseInt(event.target.value);
+
+		this.player.setVolume(volume);
+
+		this.setState({
+			volume
+		});
 	}
 
 	componentDidMount() {
@@ -195,6 +206,10 @@ export default class Watch extends React.Component {
 					<div className={`video ${this.state.state}`}>
 						<div id="player" />
 					</div>
+				</div>
+				<div className="settings">
+					<label htmlFor="volume">Volume</label>
+					<input id="volume" type="range" min="0" max="100" name="volume" value={this.state.volume} onChange={this.updateVolume} />
 				</div>
 			</div>
 		);

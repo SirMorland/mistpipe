@@ -79,3 +79,22 @@
 .queue .card {
 	height: calc(100% - 32px);
 }
+
+.settings {
+	display: grid;
+	gap: 16px;
+	padding: 16px;
+	grid-template-columns: max-content 1fr;
+	align-content: flex-end;
+	align-items: center;
+
+	position: fixed;
+	height: 100%;
+	width: 25%;
+	background: linear-gradient(90deg, #000, transparent);
+	opacity: 0;
+	transition: .2s ease-in-out;
+}
+.settings:hover {
+	opacity: 1;
+}
