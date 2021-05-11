@@ -19,12 +19,15 @@ export default class Watch extends React.Component {
 		this.startVideo = this.startVideo.bind(this);
 		this.play = this.play.bind(this);
 		this.setTimeout = this.setTimeout.bind(this);
+		this.startPlaying = this.startPlaying.bind(this);	
 	}
 
 	updateVolume = event => {
 		let volume = parseInt(event.target.value);
 
-		this.player.setVolume(volume);
+		if(this.player) {
+			this.player.setVolume(volume);
+		}
 
 		this.setState({
 			volume
@@ -111,7 +114,7 @@ export default class Watch extends React.Component {
 			event.target.playVideo();
 		}
 		let onPlayerStateChange = (event) => {
-			if(event.data === 0) {
+			if(event.data === window.YT.PlayerState.ENDED) {
 				this.setState(state => {
 					let id = state.nowPlaying;
 					this.socket.emit('video-ended', id);
@@ -132,7 +135,7 @@ export default class Watch extends React.Component {
 					}
 				});
 			}
-			if(event.data === 1) {
+			if(event.data === window.YT.PlayerState.PLAYING) {
 				this.play();
 			}
 		}
@@ -181,13 +184,23 @@ export default class Watch extends React.Component {
 		}, (duration - position - 4) * 1000);
 	}
 
+	startPlaying() {
+		if(this.player &&
+			this.player.playVideo &&
+			this.state.youtubeStarted &&
+			this.state.playlist.length > 0 &&
+			this.state.state === States.IDLE) {
+			this.player.playVideo();
+		}
+	}
+
 	render() {
 		let playlist = this.state.playlist.filter(a => a.id !== this.state.nowPlaying);
 
 		return (
 			<div id="watch">
 				<div className="background">
-					<h1>Mistpipe</h1>
+					<h1 onClick={this.startPlaying}>Mistpipe</h1>
 				</div>
 				<div className={`queue ${this.state.state === States.PREVIEWING ? "visible" : "hidden" }`}>
 					<div className="card">

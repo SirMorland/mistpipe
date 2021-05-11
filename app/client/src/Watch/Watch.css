@@ -17,6 +17,7 @@
 	align-items: center;
 }
 .background h1 {
+	cursor: pointer;
 	animation: idle 2s linear infinite;
 }
 
