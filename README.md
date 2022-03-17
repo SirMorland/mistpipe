@@ -13,7 +13,7 @@ Mistpipe builds on the idea of Utuputki, see [/katajakasa/Utuputki2](https://git
 1. Run `docker-compose up -d` in root directory
 
 ## Host usage
-On a computer connected to the big screen, navigate to [http://localhost:3000/mistpipe/watch](http://localhost:3000/mistpipe/watch) and click the Mistpipe logo to start playing videos in queue. To set volume, hover the mouse on the left side of the screen and an overlay with volume controls appears.
+On a computer connected to the big screen, navigate to [http://localhost:3000/mistpipe/watch](http://localhost:3000/mistpipe/watch) and click the Mistpipe logo to start playing videos in queue. Videos are played in full screen without visible YouTube controls. Between videos a short "Coming up next" banner is displayed. To set volume, hover the mouse on the left side of the screen and an overlay with volume controls appears.
 
 ![Coming up next](./next.png)
 
